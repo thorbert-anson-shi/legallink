@@ -1,0 +1,38 @@
+{
+  "canisters": {
+    "legallink_backend": {
+      "build": "python -m kybra legallink_backend src/legallink_backend/src/main.py src/legallink_backend/legallink_backend.did",
+      "candid": "src/legallink_backend/legallink_backend.did",
+      "gzip": true,
+      "post_install": ".kybra/legallink_backend/post_install.sh",
+      "tech_stack": {
+        "cdk": {
+          "kybra": {}
+        },
+        "language": {
+          "python": {}
+        }
+      },
+      "type": "custom",
+      "wasm": ".kybra/legallink_backend/legallink_backend.wasm"
+    },
+    "legallink_frontend": {
+      "dependencies": [
+        "legallink_backend"
+      ],
+      "source": [
+        "src/legallink_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "legallink_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

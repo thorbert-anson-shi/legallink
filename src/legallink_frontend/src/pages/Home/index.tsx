@@ -1,6 +1,6 @@
 import { Hero, NavSection, About } from "./sections";
 
-function Home() {
+export function Home() {
   return (
     <main className="h-screen w-screen overflow-scroll">
       <Hero />
@@ -9,5 +9,3 @@ function Home() {
     </main>
   );
 }
-
-export default Home;

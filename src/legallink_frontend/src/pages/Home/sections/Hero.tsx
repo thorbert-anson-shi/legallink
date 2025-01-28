@@ -9,9 +9,9 @@ export function Hero() {
 
   return (
     <section id="hero" className="relative h-[90%] w-full">
-      <Navbar />
-      <div className="absolute top-0 z-50 flex h-full w-1/2 flex-col justify-center gap-y-8 pl-24 text-left">
-        <h1 className="font-open-sans text-6xl font-medium leading-normal">
+      <Navbar className="absolute top-0 z-50" />
+      <div className="absolute top-0 z-40 flex h-full w-1/2 flex-col justify-center gap-y-8 pl-24 text-left">
+        <h1 className="font-poppins text-6xl font-medium leading-normal">
           AI Legalizer,
           <br />
           Under & for The Law

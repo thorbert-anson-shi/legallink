@@ -9,9 +9,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@langchain/core": "^0.3.37",
+    "@langchain/google-genai": "^0.1.0",
+    "@langchain/google-vertexai": "0.1.8",
+    "@langchain/redis": "^0.1.0",
     "azle": "^0.25.0",
     "busboy": "^1.6.0",
+    "cheerio": "^1.0.0",
+    "chromadb": "^1.10.4",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "langchain": "^0.1.0",
+    "langchain-core": "^0.0.4",
     "pdf-parse": "^1.1.1",
     "vite": "^6.0.11"
   },

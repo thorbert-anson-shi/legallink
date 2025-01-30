@@ -27,5 +27,21 @@
     "@types/busboy": "^1.5.4",
     "@types/express": "^5.0.0",
     "@types/pdf-parse": "^1.1.4"
+  },
+  "build": {
+    "external": [
+      "node:async_hooks",
+      "child_process",
+      "tls",
+      "fs",
+      "net",
+      "http",
+      "https",
+      "os",
+      "path",
+      "stream",
+      "util"
+    ]
   }
+
 }

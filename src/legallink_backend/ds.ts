@@ -1,5 +1,5 @@
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+// import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { ChatVertexAI } from "@langchain/google-vertexai";
 import { VertexAIEmbeddings } from "@langchain/google-vertexai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
@@ -15,8 +15,11 @@ import {
 import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
 import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 import { MemorySaver } from "@langchain/langgraph";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
+// import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { Document } from "@langchain/core/documents";
+import fs from "fs";
+import pdfParse from "pdf-parse";
+
 
 // 1. Inisialisasi komponen utama
 async function initializeComponents() {
@@ -34,31 +37,57 @@ async function initializeComponents() {
   return { llm, embeddings, vectorStore };
 }
 
+// ✅ Fungsi untuk membaca & mengekstrak teks dari PDF menggunakan pdf-parse
+async function loadPDF(path: string): Promise<string> {
+    try {
+      const dataBuffer = fs.readFileSync(path);
+      const pdfData = await pdfParse(dataBuffer);
+      return pdfData.text; // Mengambil teks dari PDF
+    } catch (error) {
+      console.error(`❌ Gagal memproses PDF: ${path}`, error);
+      return ""; // Jika gagal, kembalikan string kosong agar tidak merusak proses
+    }
+  }
+
+
 // 2. Pemrosesan dokumen PDF
 async function processLegalDocuments(vectorStore: MemoryVectorStore) {
   // Load multiple PDF documents
   const pdfPaths = [
-    "path/to/dokumen1.pdf",
-    "path/to/dokumen2.pdf",
-    "path/to/dokumen3.pdf"
+    "src/docs/5. UU-40-2007 PERSEROAN TERBATAS.pdf",
+    // "src/docs/e39ab-uu-nomor-8-tahun-1999/pdf",
+    // "src\docs\Kerjasama_UMKM.pdf",
+    // "src\docs\kolonial_kuh_perdata_fix.pdf",
+    // "src\docs\KUH DAGANG.pdf",
+    // "src\docs\UU Nomor  19 Tahun 2016.pdf",
+    // "src\docs\UU Nomor 13 Tahun 2003.pdf",
+    // "src/docs/UU_1999_30.pdf",
+    // "src\docs\UU_Nomor_11_Tahun_2020-compressed.pdf"
   ];
 
-  const loaders = pdfPaths.map(path => 
-    new PDFLoader(path)
-  );
+  // ✅ Load semua dokumen PDF
+  const pdfTexts = await Promise.all(pdfPaths.map(path => loadPDF(path)));
 
-  const docsArrays = await Promise.all(loaders.map(loader => loader.load()));
-  const rawDocs = docsArrays.flat();
+  // ✅ Ubah teks PDF menjadi dokumen LangChain
+  const rawDocs = pdfTexts.map((text, index) => ({
+    pageContent: text,
+    metadata: { source: pdfPaths[index] },
+  }));
 
-  // Splitter khusus dokumen hukum
+  // ✅ Splitter khusus dokumen hukum (Menggunakan pemisah Pasal, BAB, dll.)
   const legalSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 2000,
     chunkOverlap: 400,
-    separators: ["\n\nPasal", "\n\nBAB", "\n\nBagian", "\n\n"]
+    separators: ["\n\nPasal", "\n\nBAB", "\n\nBagian", "\n\n"],
   });
 
+  // ✅ Pisahkan dokumen menjadi chunk
   const allSplits = await legalSplitter.splitDocuments(rawDocs);
+
+  // ✅ Tambahkan ke Vector Store
   await vectorStore.addDocuments(allSplits);
+
+  console.log("✅ Semua dokumen hukum telah diproses dan dimasukkan ke Vector Store.");
   
   return allSplits;
 }
@@ -201,7 +230,7 @@ async function runExamples(graph: any, graphWithMemory: any) {
 }
 
 // 7. Main function
-async function main() {
+export async function main() {
   try {
     // Inisialisasi komponen
     const { llm, vectorStore } = await initializeComponents();

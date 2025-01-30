@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-
+import {main} from './ds'
 // Busboy is used to parse form data from HTML forms (we will utilize it to accept the PDF files)
 import busboy from 'busboy';
 
@@ -13,6 +13,10 @@ const app = express();
 // Examples
 app.get('/', function (req: Request, res: Response) {
     res.send("Hello, this is the home route");
+});
+
+app.get('/analyze', function (req: Request, res: Response) { 
+    main();
 });
 
 // For query params, use req.query instead of req.params

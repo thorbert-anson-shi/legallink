@@ -13,6 +13,21 @@
         "experimental": true,
         "candid_gen": "http"
       }
+    },
+    "legallink_kybra_backend": {
+      "build": "python -m kybra legallink_kybra_backend src/legallink_kybra_backend/src/main.py",
+      "candid": "src/legallink_kybra_backend/legallink_kybra_backend.did",
+      "gzip": true,
+      "tech_stack": {
+        "cdk": {
+          "kybra": {}
+        },
+        "language": {
+          "python": {}
+        }
+      },
+      "type": "custom",
+      "wasm": ".kybra/legallink_kybra_backend/legallink_kybra_backend.wasm"
     }
   },
   "defaults": {
